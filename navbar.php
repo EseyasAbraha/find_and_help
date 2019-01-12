@@ -1,6 +1,8 @@
 <?php
 if (!defined('ACCESS')) { die; }
 
+echo 'Hello';
+
 $loggedInUser = \App\Library\User::isLoggedIn();
 ?>
 <nav class="navbar navbar-default">
