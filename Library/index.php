@@ -14,5 +14,11 @@ if (isset($_GET['action'])) {
         case 'register':
             \App\Library\User::register($db);
             break;
+        case 'login':
+            \App\Library\User::login($db);
+            break;
+        case 'logout':
+            \App\Library\User::logout();
+            break;
     }
 }

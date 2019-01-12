@@ -99,6 +99,47 @@ class User
         return isset($result[0]) ? $result[0] : [];
     }
 
+    public static function isLoggedIn()
+    {
+        if (isset($_SESSION['user'])) {
+            return $_SESSION['user'];
+        }
+        return false;
+    }
+
+    public static function logout()
+    {
+        unset($_SESSION['user']);
+        header("location: /");
+    }
+
+    public static function login(Database $db)
+    {
+        if (!isset($_POST)) {
+            return;
+        }
+
+        $email = $_POST['email'];
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            die('Email is not valid.');
+        }
+
+        $sql = "SELECT * FROM users WHERE `email`=:email and `password`=:password";
+        $statment = $db->select($sql);
+        $statment->bindParam(':email', $email);
+        $statment->bindParam(':password', $_POST['password']);
+        $statment->execute();
+
+        $user = $statment->fetch();
+        if (!$user) {
+            die('This credentials does not exist, please try again.');
+        }
+
+        $_SESSION['user'] = $user;
+
+        header("location: /profile");
+    }
+
     public static function register(Database $db)
     {
         if (!isset($_POST)) {
@@ -123,8 +164,8 @@ class User
             die('This email Already registered, please try again.');
         }
 
-        $sql = "INSERT INTO `users` (`first_name`, `last_name`, `birthday`, `gender`, `dutch_level`, `nationality`, `address`, `house_number`, `post_code`, `province`, `city`, `phone`, `email`, `type`)
-VALUES (:first_name, :last_name, :birthday, :gender, :dutch_level, :nationality, :address, :house_number, :post_code, :province, :city, :phone, :email, :type);";
+        $sql = "INSERT INTO `users` (`first_name`, `last_name`, `birthday`, `gender`, `dutch_level`, `nationality`, `address`, `house_number`, `post_code`, `province`, `city`, `phone`, `email`, `type`, `password`)
+VALUES (:first_name, :last_name, :birthday, :gender, :dutch_level, :nationality, :address, :house_number, :post_code, :province, :city, :phone, :email, :type, :password);";
         $statment = $db->select($sql);
         $statment->bindParam(':first_name', $_POST['first_name']);
         $statment->bindParam(':last_name', $_POST['last_name']);
@@ -140,6 +181,7 @@ VALUES (:first_name, :last_name, :birthday, :gender, :dutch_level, :nationality,
         $statment->bindParam(':phone', $_POST['phone']);
         $statment->bindParam(':email', $_POST['email']);
         $statment->bindParam(':type', $_POST['type']);
+        $statment->bindParam(':password', $_POST['password']);
         $statment->execute();
 
         $lastId = $db->getConnection()->lastInsertId();

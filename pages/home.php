@@ -2,6 +2,11 @@
 if (!defined('ACCESS')) { die; }
 
 use App\Library\Messages;
+use App\Library\User;
+
+if (User::isLoggedIn()) {
+    header("location: /profile");
+}
 ?>
 <h1>Welcome to <?= APP_NAME; ?></h1>
 
@@ -16,14 +21,14 @@ use App\Library\Messages;
             <div class="panel-heading">Login</div>
             <div class="panel-body">
 
-                <form>
+                <form method="post" action="/?action=login" class="login">
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                        <label for="exampleInputEmail">Email address</label>
+                        <input type="email" name="email" class="form-control" id="exampleInputEmail" placeholder="Email">
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                        <label for="exampleInputPassword">Password</label>
+                        <input type="password" name="password" class="form-control" id="exampleInputPassword" placeholder="Password">
                     </div>
                     <button type="submit" class="btn btn-default">Login</button>
                 </form>

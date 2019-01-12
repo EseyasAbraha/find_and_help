@@ -2,13 +2,16 @@
 if (!defined('ACCESS')) { die; }
 
 use App\Library\UserTypes;
+use App\Library\User;
 
 if (UserTypes::validType()) {
     return;
 }
 
-$user = new App\Library\User($_GET['type'], $db);
-
+$user = new User($_GET['type'], $db);
+if (User::isLoggedIn()) {
+    header("location: /profile");
+}
 ?>
 <h1>Registration Wizard</h1>
 

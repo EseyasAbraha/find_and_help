@@ -1,0 +1,19 @@
+-- auto-generated definition
+CREATE TABLE users
+(
+  id           INT          NOT NULL
+    PRIMARY KEY,
+  first_name   VARCHAR(255) NOT NULL,
+  last_name    VARCHAR(255) NOT NULL,
+  birthday     VARCHAR(255) NOT NULL,
+  gender       SMALLINT(2)  NOT NULL,
+  dutch_level  VARCHAR(2)   NULL,
+  nationality  VARCHAR(255) NULL,
+  address      VARCHAR(255) NOT NULL,
+  house_number VARCHAR(255) NOT NULL,
+  post_code    VARCHAR(255) NOT NULL,
+  province     VARCHAR(255) NOT NULL,
+  city         VARCHAR(255) NOT NULL,
+  phone        VARCHAR(255) NOT NULL,
+  email        VARCHAR(255) NOT NULL
+);

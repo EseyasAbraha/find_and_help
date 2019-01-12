@@ -1,5 +1,7 @@
 <?php
 if (!defined('ACCESS')) { die; }
+
+$loggedInUser = \App\Library\User::isLoggedIn();
 ?>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -28,18 +30,20 @@ if (!defined('ACCESS')) { die; }
                 </li>
             </ul>
 
+            <?php if ($loggedInUser) { ?>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        Admin <span class="caret"></span>
+                        <?= $loggedInUser['first_name'] . ' ' . $loggedInUser['last_name']?> <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="/profile">Profile</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="/?logout=yes">Logout</a></li>
+                        <li><a href="/?action=logout">Logout</a></li>
                     </ul>
                 </li>
             </ul>
+            <?php } ?>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>

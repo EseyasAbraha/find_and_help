@@ -4,9 +4,15 @@ if (!defined('ACCESS')) {
     die;
 }
 
-$user = new App\Library\User('student', $db);
+use App\Library\User;
 
-$result = $user->getUserById(1);
+if (User::isLoggedIn() === false) {
+    header("location: /");
+}
+
+$user = new User('student', $db);
+
+$result = $user->getUserById($loggedInUser['id']);
 if (empty($result)) {
     include __DIR__.'/404.php';
     return;

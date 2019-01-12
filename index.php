@@ -17,6 +17,8 @@ if (isset($_GET['route'])) {
         $route = __DIR__.'/pages/404.php';
     }
 }
+
+ob_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,3 +62,6 @@ if (isset($_GET['route'])) {
 <script src="/assets/main.js"></script>
 </body>
 </html>
+<?php
+
+echo ob_get_clean();
