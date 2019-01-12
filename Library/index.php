@@ -6,6 +6,7 @@ define('APP_NAME', 'Help Finder');
 include 'Database.php';
 include 'UserTypes.php';
 include 'User.php';
+include 'Messages.php';
 
 $db = new \App\Library\Database();
 if (isset($_GET['action'])) {

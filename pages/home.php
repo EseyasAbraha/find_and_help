@@ -1,5 +1,7 @@
 <?php
 if (!defined('ACCESS')) { die; }
+
+use App\Library\Messages;
 ?>
 <h1>Welcome to <?= APP_NAME; ?></h1>
 
@@ -33,6 +35,7 @@ if (!defined('ACCESS')) { die; }
         <div class="panel panel-default register">
             <div class="panel-heading">Become Member</div>
             <div class="panel-body">
+                <?=Messages::getFlashMessage(Messages::SUCCEED, 'register')?>
                 <a href="/register?type=student" type="button" class="btn btn-info">As a Student</a>
                 <a href="/register?type=teacher" type="button" class="btn btn-primary">As a Teacher</a>
             </div>

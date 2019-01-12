@@ -28,13 +28,14 @@ class User
     {
         $info = [
             'first_name' => [
-                'name' => 'First Name'
+                'name' => 'First Name',
             ],
             'last_name' => [
-                'name' => 'Last Name'
+                'name' => 'Last Name',
             ],
             'birthday' => [
-                'name' => 'Birthday'
+                'name' => 'Birthday',
+                'id' => 'datepicker',
             ],
             'gender' => [
                 'name' => 'Gender',
@@ -42,7 +43,7 @@ class User
             ],
             'nationality' => [
                 'name' => 'Nationality',
-                'required' => false
+                'required' => false,
             ],
         ];
 
@@ -60,25 +61,27 @@ class User
     {
         $info = [
             'address' => [
-                'name' => 'Address'
+                'name' => 'Address',
             ],
             'house_number' => [
-                'name' => 'House Number'
+                'name' => 'House Number',
+                'inputType' => 'number',
             ],
             'post_code' => [
-                'name' => 'Post Code'
+                'name' => 'Post Code',
             ],
             'province' => [
-                'name' => 'Province'
+                'name' => 'Province',
             ],
             'city' => [
-                'name' => 'City'
+                'name' => 'City',
             ],
             'phone' => [
-                'name' => 'Telephone'
+                'name' => 'Telephone',
             ],
             'email' => [
-                'name' => 'E-mail address'
+                'name' => 'E-mail address',
+                'inputType' => 'email',
             ],
         ];
 
@@ -102,7 +105,25 @@ class User
             return;
         }
 
-        $sql = "INSERT INTO `users` (`first_name`, `last_name`, `birthday`, `gender`, `dutch_level`, `nationality`, `address`, `house_number`, `post_code`, `province`, `city`, `phone`, `email`, `type`) 
+        $email = $_POST['email'];
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            die('Email is not valid.');
+        }
+
+        if (!isset($_FILES["fileToUpload"])) {
+            die('Please select a profile picture.');
+        }
+
+        $sql = "SELECT * FROM users WHERE `email`=:email";
+        $statment = $db->select($sql);
+        $statment->bindParam(':email', $email);
+        $statment->execute();
+
+        if ($statment->fetch()) {
+            die('This email Already registered, please try again.');
+        }
+
+        $sql = "INSERT INTO `users` (`first_name`, `last_name`, `birthday`, `gender`, `dutch_level`, `nationality`, `address`, `house_number`, `post_code`, `province`, `city`, `phone`, `email`, `type`)
 VALUES (:first_name, :last_name, :birthday, :gender, :dutch_level, :nationality, :address, :house_number, :post_code, :province, :city, :phone, :email, :type);";
         $statment = $db->select($sql);
         $statment->bindParam(':first_name', $_POST['first_name']);
@@ -121,6 +142,50 @@ VALUES (:first_name, :last_name, :birthday, :gender, :dutch_level, :nationality,
         $statment->bindParam(':type', $_POST['type']);
         $statment->execute();
 
+        $lastId = $db->getConnection()->lastInsertId();
+
+        self::uploadImage($lastId);
+        Messages::setFlashMessage(Messages::SUCCEED, 'register', 'Registration has done successfully');
+
         header("location: /");
+    }
+
+    private static function uploadImage($id)
+    {
+        $target_dir = __DIR__ . "/../assets/uploads/";
+        $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+        // Check if image file is a actual image or fake image
+        $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+        if ($check === false) {
+            die("File is not an image.");
+        }
+
+        // Check if file already exists
+        if (file_exists($target_dir.$id.'.'.$imageFileType)) {
+            die("Sorry, file already exists.");
+        }
+        // Check file size
+        if ($_FILES["fileToUpload"]["size"] > 500000) {
+            die("Sorry, your file is too large.");
+        }
+        // Allow certain file formats
+        if ($imageFileType != "jpg"
+            && $imageFileType != "png"
+            && $imageFileType != "jpeg"
+            && $imageFileType != "gif"
+        ) {
+            die("Sorry, only JPG, JPEG, PNG & GIF files are allowed.");
+        }
+
+        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_dir.$id.'.'.$imageFileType)) {
+            echo "The file ".basename($_FILES["fileToUpload"]["name"])." has been uploaded.";
+        } else {
+            die("Sorry, there was an error uploading your file.");
+        }
+
+        return $uploadOk;
     }
 }

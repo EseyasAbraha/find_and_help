@@ -38,13 +38,12 @@ $user = new App\Library\User($_GET['type'], $db);
                     </div>
                 </div>
 
-                <form role="form" method="post" action="/?action=register">
+                <form role="form" method="post" action="/?action=register" class="registration" novalidate  enctype="multipart/form-data">
                     <input type="hidden" name="type" value="<?=UserTypes::typeIndex($_GET['type'])?>">
                     <div class="row setup-content" id="step-1">
                         <div class="col-xs-12">
                             <div class="col-md-12">
                                 <h3> Personal Information</h3>
-                                <input type="text" id="datepicker" />
                                 <?php
                                 foreach ($user->personalInfo() as $key => $info) {
                                     if (!isset($info['required']) || $info['required']) {
@@ -54,14 +53,17 @@ $user = new App\Library\User($_GET['type'], $db);
                                         $isRequired = '';
                                         $required = '';
                                     }
+                                    $elementInputId = $info['id'] ?? $key;
+
                                     if (isset($info['select']) && is_array($info['select'])) {
                                         $opt = '';
                                         foreach ($info['select'] as $indexKey => $value) {
                                             $opt .= '<option value="'.$indexKey.'">'.$value.'</option>';
                                         }
-                                        $input = '<select name="'.$key.'" '.$required.' class="form-control">'.$opt.'</select>';
+                                        $input = '<select name="'.$key.'" '.$required.' class="form-control" id="'.$elementInputId.'">'.$opt.'</select>';
                                     } else {
-                                        $input = '<input type="text" name="'.$key.'" '.$required.' class="form-control" placeholder="Enter '.$info['name'].'"  />';
+                                        $inputType = $info['inputType'] ?? 'text';
+                                        $input = '<input type="' . $inputType . '" name="'.$key.'" '.$required.' class="form-control" placeholder="Enter '.$info['name'].'" id="'.$elementInputId.'" />';
                                     }
                                     ?>
                                     <div class="form-group">
@@ -88,14 +90,20 @@ $user = new App\Library\User($_GET['type'], $db);
                                         $isRequired = '';
                                         $required = '';
                                     }
+                                    $inputType = $info['inputType'] ?? 'text';
                                     ?>
                                     <div class="form-group">
                                         <label class="control-label"><?= $info['name']; ?></label>
-                                        <input type="text" name="<?=$key?>" <?=$required?> class="form-control" placeholder="Enter <?= $info['name']; ?>"  />
+                                        <input type="<?=$inputType?>" name="<?=$key?>" <?=$required?> class="form-control" placeholder="Enter <?= $info['name']; ?>"  />
                                     </div>
                                     <?php
                                 }
                                 ?>
+                                <div class="form-group">
+                                    <label class="control-label">Profile Image:</label>
+                                    <input type="file" name="fileToUpload" id="fileToUpload">
+                                </div>
+
                                 <button class="btn btn-primary nextBtn btn-lg pull-right" type="button" >Next</button>
                             </div>
                         </div>
@@ -103,6 +111,16 @@ $user = new App\Library\User($_GET['type'], $db);
                     <div class="row setup-content" id="step-3">
                         <div class="col-xs-12">
                             <div class="col-md-12">
+                                <h3> Credentials</h3>
+                                <div class="form-group">
+                                    <label class="control-label">Password:</label>
+                                    <input type="password" name="password" required class="form-control" placeholder="Enter Password"  />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">ConfirmPassword:</label>
+                                    <input type="password" name="confirm_password" required class="form-control" placeholder="Confirm Password"  />
+                                </div>
+
                                 <h3> Finish</h3>
                                 <p>By pressing Confirm! button you will accept our
                                     <a href="/conditions" target="_blank">terms & conditions</a> and you can use our ser service</p>

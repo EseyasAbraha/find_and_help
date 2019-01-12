@@ -1,4 +1,6 @@
 <?php
+// Start the session
+session_start();
 
 define('ACCESS', '1');
 
@@ -58,4 +60,3 @@ if (isset($_GET['route'])) {
 <script src="/assets/main.js"></script>
 </body>
 </html>
-
