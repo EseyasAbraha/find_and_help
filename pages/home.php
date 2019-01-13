@@ -38,11 +38,11 @@ if (User::isLoggedIn()) {
     </div>
     <div class="col-md-6">
         <div class="panel panel-default register">
-            <div class="panel-heading">Become Member</div>
+            <div class="panel-heading">Become Member ኣባል ኩን</div>
             <div class="panel-body">
                 <?=Messages::getFlashMessage(Messages::SUCCEED, 'register')?>
-                <a href="/register?type=student" type="button" class="btn btn-info">As a Student</a>
-                <a href="/register?type=teacher" type="button" class="btn btn-primary">As a Teacher</a>
+                <a href="/register?type=student" type="button" class="btn btn-info">As a Student ከም ተማሃራይ</a>
+                <a href="/register?type=teacher" type="button" class="btn btn-primary">As a Teacher ከም መምህር</a>
             </div>
         </div>
     </div>
